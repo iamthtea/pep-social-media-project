@@ -19,8 +19,8 @@ public class AccountService {
         accountDAO = new AccountDAO();
     }
 
-    /* This constructor is for a AuthorService when a AuthorDAO is provided. 
-     * It allows for the testing of AuthorService independent of AuthorDAO.
+    /* This constructor is for a AccountService when a AccountDAO is provided. 
+     * It allows for the testing of AccountService independent of AccountDAO.
      */
     public AccountService(AccountDAO accountDAO) {
         this.accountDAO = accountDAO;

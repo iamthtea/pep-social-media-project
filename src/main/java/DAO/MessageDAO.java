@@ -91,8 +91,7 @@ public class MessageDAO {
         }
         return null;
     }
-
-
+    
     // This method deletes a message from the database based on the message_id
     public void deleteMessage(int id) {
         Connection connection = ConnectionUtil.getConnection();
@@ -124,6 +123,30 @@ public class MessageDAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    // This method retrieves all messages written by a particular user.
+    public List<Message> getMessageByAccount(int posterId) {
+        Connection connection = ConnectionUtil.getConnection();
+        List<Message> messages = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM Message WHERE poster_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, posterId);
+
+            ResultSet rSet = preparedStatement.executeQuery();
+            while (rSet.next()) {
+                Message message = new Message(rSet.getInt("message_id"),
+                     rSet.getInt("posted_by"), 
+                     rSet.getString("message_text"), 
+                     rSet.getLong("time_posted_epoch"));
+                messages.add(message);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     

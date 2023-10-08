@@ -6,9 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import Model.Account;
 import Model.Message;
 import Service.AccountService;
+import Service.MessageService;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+
+import java.util.List;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -17,6 +20,7 @@ import io.javalin.http.Context;
  */
 public class SocialMediaController {
     AccountService accountService;
+    MessageService messageService;
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
@@ -24,6 +28,7 @@ public class SocialMediaController {
      */
     public SocialMediaController() {
         this.accountService = new AccountService();
+        this.messageService = new MessageService();
     }
 
     public Javalin startAPI() {
@@ -31,6 +36,10 @@ public class SocialMediaController {
         app.get("example-endpoint", this::exampleHandler);
         app.post("/register", this::createAccountHandler);
         app.post("/login", this::authAccountHandler);
+        app.post("/messages", this::createNewMessageHandler);
+        app.get("/messages", this::getAllMessagesHandler);
+        app.get("/messages/{message_id}", this::getMessageByIdHandler);
+        app.get("/accounts/{account_id}/messages", this::getMessagesByAccountHandler);
 
         return app;
     }
@@ -66,6 +75,40 @@ public class SocialMediaController {
         } else {
             ctx.status(401);
         }
+    }
+
+    // Handler to create a new message.
+    private void createNewMessageHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        Message addedMessage = messageService.createNewMessage(message);
+        if (addedMessage != null) {
+            ctx.json(mapper.writeValueAsString(addedMessage));
+        } else {
+            ctx.status(400);
+        }
+    }
+
+    // Handler to retrieve all messages in the database.
+    private void getAllMessagesHandler(Context ctx) {
+        List<Message> messages = messageService.getAllMessages();
+        ctx.json(messages);
+    }
+
+    // Handler to retrieve a message by its id.
+    private void getMessageByIdHandler(Context ctx) {
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        ctx.json(messageService.getMessageById(message_id));
+    }
+
+    // Handler to delete a message given its id.
+
+    // Handler to update a message text given its id.
+
+    // Handler to retrieve all messages posted by a given account.
+    private void getMessagesByAccountHandler(Context ctx) {
+        int account_id = Integer.parseInt(ctx.pathParam("account_id"));
+        ctx.json(messageService.getMessagesByAccount(account_id));
     }
 
 }
