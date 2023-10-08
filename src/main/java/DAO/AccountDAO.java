@@ -27,11 +27,13 @@ public class AccountDAO {
         Connection connection = ConnectionUtil.getConnection();
         List<Account> accounts = new ArrayList<>();
         try {
-            String sql = "SELECT username, password FROM Account";
+            String sql = "SELECT * FROM Account";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet rSet = preparedStatement.executeQuery();
             while(rSet.next()) {
-                Account account = new Account(rSet.getString("username"), rSet.getString("password"));
+                Account account = new Account(rSet.getInt("account_id"),
+                    rSet.getString("username"), 
+                    rSet.getString("password"));
                 accounts.add(account);
             }
 
@@ -42,6 +44,8 @@ public class AccountDAO {
         return accounts;   
     };
 
+
+    //This method adds a new account into the database and generates an account id.
     public Account addAccount(Account account){
         Connection connection = ConnectionUtil.getConnection();
         try {
