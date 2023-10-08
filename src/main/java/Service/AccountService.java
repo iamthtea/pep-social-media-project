@@ -43,14 +43,13 @@ public class AccountService {
     }
 
     // This method is to authenticate an account that should already exist. 
-    /* 
-     public Account authAccount(String username, String password) {
-        List<Account> allAccounts = accountDAO.getAllAccounts();
-        if (allAccounts.contains(username)) {
-
+    public Account authAccount(String username, String password) {
+        Account accountSearch = accountDAO.getAccountByUsername(username);
+        if (accountSearch != null && password.equals(accountSearch.getPassword())) {
+            return accountSearch;
+        } else {
+            return null;
         }
-     }
-    */
-
+    }
 
 } 

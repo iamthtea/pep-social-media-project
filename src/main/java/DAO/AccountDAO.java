@@ -66,4 +66,28 @@ public class AccountDAO {
         }
         return null;
     }
+
+    // This method retrieves an account from the database by the inputted username.
+    public Account getAccountByUsername(String username) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "SELECT * FROM Account WHERE username = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setString(1, username);
+
+            ResultSet rSet = preparedStatement.executeQuery();
+            while (rSet.next()) {
+                Account account = new Account(rSet.getInt("account_id"), 
+                    rSet.getString("username"), 
+                    rSet.getString("password"));
+                return account;    
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
 }
