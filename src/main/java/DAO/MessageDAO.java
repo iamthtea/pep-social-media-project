@@ -27,7 +27,7 @@ public class MessageDAO {
     public Message createNewMessage(Message message){
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "INSERT INTO Message (posted_by, message_text, time_posted_epoch) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO message (posted_by, message_text, time_posted_epoch) VALUES (?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             preparedStatement.setInt(1, message.getPosted_by());
@@ -52,7 +52,7 @@ public class MessageDAO {
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM Message";
+            String sql = "SELECT * FROM message";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet rSet = preparedStatement.executeQuery();
             while (rSet.next()) {
@@ -73,17 +73,18 @@ public class MessageDAO {
     public Message getMessageById(int id) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "SELECT * FROM Message WHERE message_id = ?";
+            String sql = "SELECT * FROM message WHERE message_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setInt(1, id);
 
             ResultSet rSet = preparedStatement.executeQuery();
             while (rSet.next()) {
-                Message message = new Message(rSet.getInt("message_id"), 
-                rSet.getInt("posted_by"), 
-                rSet.getString("message_text"), 
-                rSet.getLong("time_posted_epoch"));
+                Message message = new Message(
+                    rSet.getInt("message_id"), 
+                    rSet.getInt("posted_by"), 
+                    rSet.getString("message_text"), 
+                    rSet.getLong("time_posted_epoch"));
                 return message;
             }
         } catch (SQLException e) {
@@ -96,7 +97,7 @@ public class MessageDAO {
     public void deleteMessage(int id) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "DELETE FROM Message WHERE message_id = ?";
+            String sql = "DELETE FROM message WHERE message_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setInt(1, id);
@@ -112,7 +113,7 @@ public class MessageDAO {
     public void updateMessage(int id, Message message) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "UPDATE Message SET message_text = ? WHERE message_id = ?";
+            String sql = "UPDATE message SET message_text = ? WHERE message_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setString(1, message.getMessage_text());
@@ -126,11 +127,11 @@ public class MessageDAO {
     }
 
     // This method retrieves all messages written by a particular user.
-    public List<Message> getMessageByAccount(int posterId) {
+    public List<Message> getMessagesByAccount(int posterId) {
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM Message WHERE poster_id = ?";
+            String sql = "SELECT * FROM message WHERE posted_by = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setInt(1, posterId);
@@ -142,6 +143,7 @@ public class MessageDAO {
                      rSet.getString("message_text"), 
                      rSet.getLong("time_posted_epoch"));
                 messages.add(message);
+                return messages;
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

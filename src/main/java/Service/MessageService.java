@@ -5,6 +5,7 @@ import Model.Account;
 import DAO.MessageDAO;
 import DAO.AccountDAO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // This service class contains business logic that acts as an access point between the controller and the DAO. 
@@ -43,16 +44,42 @@ public class MessageService {
 
     // This method retrieves a message by its id.
     public Message getMessageById(int id) {
-        return messageDAO.getMessageById(id);
+        Message foundMessage = messageDAO.getMessageById(id);
+        if (foundMessage != null) {
+            return foundMessage;
+        } else {
+            return null;
+        }
+        //return messageDAO.getMessageById(id);
     }
 
     // This method deletes a message given its id.
+    public Message deletMessage(int id) {
+        Message foundMessage = messageDAO.getMessageById(id);
+        if (foundMessage != null) {
+            messageDAO.deleteMessage(id);
+            return foundMessage;
+        } else {
+            return null;
+        }
+    }
 
     // This method updates a message text given its id.
+    public Message updatMessage(int id, String text) {
+        Message foundMessage = messageDAO.getMessageById(id);
+
+        return null;
+    }
 
     // This method retrieves all messages posted by a particular user.
-    public List<Message> getMessagesByAccount(int posterId) {
-        return messageDAO.getMessageByAccount(posterId);
+    public List<Message> getMessagesByAccount(int account_id) {
+        List<Message> foundMessages = messageDAO.getMessagesByAccount(account_id);
+        List<Message> notFound = new ArrayList<>();
+        if (foundMessages != null) {
+            return foundMessages;
+        } else {
+            return notFound; 
+        }
     }
 
 }

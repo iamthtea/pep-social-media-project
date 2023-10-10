@@ -39,6 +39,8 @@ public class SocialMediaController {
         app.post("/messages", this::createNewMessageHandler);
         app.get("/messages", this::getAllMessagesHandler);
         app.get("/messages/{message_id}", this::getMessageByIdHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageByIdHandler);
+        //app.patch("/messages/{message_id}", this::updateMessageHandler);
         app.get("/accounts/{account_id}/messages", this::getMessagesByAccountHandler);
 
         return app;
@@ -95,13 +97,28 @@ public class SocialMediaController {
         ctx.json(messages);
     }
 
-    // Handler to retrieve a message by its id.
+    // Handler to retrieve a message by its id. 
     private void getMessageByIdHandler(Context ctx) {
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
-        ctx.json(messageService.getMessageById(message_id));
+        Message message = messageService.getMessageById(message_id);
+        if (message == null) {
+            ctx.status(200);
+        } else {
+            ctx.json(message);
+        }
+        //ctx.json(messageService.getMessageById(message_id));
     }
 
     // Handler to delete a message given its id.
+    private void deleteMessageByIdHandler(Context ctx) {
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message deletedMessage = messageService.deletMessage(message_id);
+        if (deletedMessage == null) {
+            ctx.status(200);
+        } else {
+            ctx.json(deletedMessage);
+        }
+    }
 
     // Handler to update a message text given its id.
 
