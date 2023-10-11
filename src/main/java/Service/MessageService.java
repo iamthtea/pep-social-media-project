@@ -65,10 +65,19 @@ public class MessageService {
     }
 
     // This method updates a message text given its id.
-    public Message updatMessage(int id, String text) {
+    public Message updateMessage(int id, Message message) {
+        String newText = message.getMessage_text();
         Message foundMessage = messageDAO.getMessageById(id);
-
-        return null;
+        if (foundMessage != null) {
+            if (newText.length() > 0 && newText.length() < 255) {
+                messageDAO.updateMessage(id, message);
+                return messageDAO.getMessageById(id);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     // This method retrieves all messages posted by a particular user.

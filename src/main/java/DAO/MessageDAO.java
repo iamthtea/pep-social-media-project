@@ -124,6 +124,7 @@ public class MessageDAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    
     }
 
     // This method retrieves all messages written by a particular user.

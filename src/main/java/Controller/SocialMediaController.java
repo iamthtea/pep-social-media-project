@@ -40,7 +40,7 @@ public class SocialMediaController {
         app.get("/messages", this::getAllMessagesHandler);
         app.get("/messages/{message_id}", this::getMessageByIdHandler);
         app.delete("/messages/{message_id}", this::deleteMessageByIdHandler);
-        //app.patch("/messages/{message_id}", this::updateMessageHandler);
+        app.patch("/messages/{message_id}", this::updateMessageHandler);
         app.get("/accounts/{account_id}/messages", this::getMessagesByAccountHandler);
 
         return app;
@@ -121,6 +121,17 @@ public class SocialMediaController {
     }
 
     // Handler to update a message text given its id.
+    private void updateMessageHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message updatedMessage = messageService.updateMessage(message_id, message);
+        if (updatedMessage != null) {
+            ctx.json(mapper.writeValueAsString(updatedMessage));
+        } else {
+            ctx.status(400);
+        }
+    }
 
     // Handler to retrieve all messages posted by a given account.
     private void getMessagesByAccountHandler(Context ctx) {
